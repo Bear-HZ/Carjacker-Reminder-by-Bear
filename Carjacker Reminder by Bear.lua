@@ -6,7 +6,7 @@
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
 script_version("1.0.0-beta")
-local script_version = "1.0.0-beta"
+local script_version = "1.0.0-beta-2"
 
 
 -----------------------------------------------------
@@ -147,6 +147,7 @@ local function createReminderTextdraw()
 	sampTextdrawSetAlign(517, 2)
 	sampTextdrawSetLetterSizeAndColor(517, textSize / 4, textSize, 0xFFFFFFFF)
 	sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
+	sampTextdrawSetBoxColorAndSize(517, 1, 0xFF000000, 0, game_resY * textSize * #reminderMessage / 90)
 end
 
 
@@ -258,7 +259,7 @@ function main()
 							wait(pulseDuration / 2)
 							
 							if isSellingAvailable and config_table.Options.isReminderEnabled then
-								sampTextdrawSetBoxColorAndSize(517, 1, 0x00000000, 0, game_resY * textSize * #reminderMessage / 90)
+								sampTextdrawSetBoxColorAndSize(517, 1, 0xFF000000, 0, game_resY * textSize * #reminderMessage / 90)
 								sampTextdrawSetLetterSizeAndColor(517, textSize / 4, textSize, 0xFFFFFFFF)
 								sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
 							else break
