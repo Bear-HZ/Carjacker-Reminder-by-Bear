@@ -187,7 +187,7 @@ function main()
 		end
 	end)
 	
-	-- Minute-long recurring timer for pulse triggering
+	-- Recurring timer for pulse triggering, determined in length by pulse frequency
 	local isPulseTimerOver
 	lua_thread.create(function()
 		while true do
