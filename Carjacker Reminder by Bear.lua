@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.0-beta-3")
-local script_version = "1.0.0-beta-3"
+script_version("1.0.0-beta-4")
+local script_version = "1.0.0-beta-4"
 
 
 -----------------------------------------------------
@@ -50,7 +50,7 @@ local reminderMessage = "/SELLCAR" -- Use "\t" for spaces; using regular spaces 
 
 local textSize = 1.2 -- Adjust text size here
 
-local pulseFrequency = 60 -- in seconds
+local pulseFrequency = 5 -- in seconds
 
 local pulseCount = 2 -- how many times the textdraw pulses each time the above amount of time has passed
 
@@ -134,6 +134,15 @@ function sampev.onServerMessage(_, msg_text)
 				return false
 			end
 		
+		-- (Failure to test due to something like being in the middle of getting spawned inside an interior, like when you log in)
+		elseif msg_text == "You can't do this right now." then
+			hasFirstCharacterLoginOccured = true
+			
+			if isCommandResponseAwaited then
+				isCommandResponseAwaited = false
+				return false
+			end
+		
 		-- (Checkpoint killed)
 		elseif msg_text == "All current checkpoints, trackers and accepted fares have been reset." then
 			hasFirstCharacterLoginOccured = true
@@ -173,8 +182,8 @@ local function createReminderTextdraw()
 	sampTextdrawSetStyle(517, 1)
 	sampTextdrawSetAlign(517, 2)
 	sampTextdrawSetLetterSizeAndColor(517, textSize / 4, textSize, 0xFFFFFFFF)
-	sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
-	sampTextdrawSetBoxColorAndSize(517, 1, 0xFF000000, 0, game_resY * textSize * #reminderMessage / 90)
+	--sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
+	sampTextdrawSetBoxColorAndSize(517, 1, 0x50000000, 0, game_resY * textSize * #reminderMessage / 90)
 end
 
 
@@ -273,18 +282,18 @@ function main()
 						wait(pulseDuration / 2)
 						
 						if isSellingAvailable and config_table.Options.isReminderEnabled then
-							sampTextdrawSetBoxColorAndSize(517, 1, 0xFFFFFFFF, 0, game_resY * textSize * #reminderMessage / 90)
+							sampTextdrawSetBoxColorAndSize(517, 1, 0x50FFFFFF, 0, game_resY * textSize * #reminderMessage / 90)
 							sampTextdrawSetLetterSizeAndColor(517, textSize / 4, textSize, 0xFF000000)
-							sampTextdrawSetOutlineColor(517, 1, 0xFFFFFFFF)
+							--sampTextdrawSetOutlineColor(517, 1, 0xFFFFFFFF)
 						else break
 						end
 						
 						wait(pulseDuration / 2)
 						
 						if isSellingAvailable and config_table.Options.isReminderEnabled then
-							sampTextdrawSetBoxColorAndSize(517, 1, 0xFF000000, 0, game_resY * textSize * #reminderMessage / 90)
+							sampTextdrawSetBoxColorAndSize(517, 1, 0x50000000, 0, game_resY * textSize * #reminderMessage / 90)
 							sampTextdrawSetLetterSizeAndColor(517, textSize / 4, textSize, 0xFFFFFFFF)
-							sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
+							--sampTextdrawSetOutlineColor(517, 1, 0xFF000000)
 						else break
 						end
 					end
