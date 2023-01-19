@@ -50,7 +50,7 @@ local reminderMessage = "/SELLCAR" -- Use "\t" for spaces; using regular spaces 
 
 local textSize = 1.2 -- Adjust text size here
 
-local pulseFrequency = 5 -- in seconds
+local pulseFrequency = 60 -- in seconds
 
 local pulseCount = 2 -- how many times the textdraw pulses each time the above amount of time has passed
 
