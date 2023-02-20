@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.0")
-local script_version = "1.0.0"
+script_version("1.0.1")
+local script_version = "1.0.1"
 
 
 -----------------------------------------------------
@@ -58,19 +58,7 @@ local pulseDuration = 1000 -- the time taken (in milliseconds) for the textdraw 
 
 local game_resX, game_resY
 
-local isCommandResponseAwaited = false
-
-local isCarjackerGameTextIntercepted = false
-
-local isCommandAttemptRedundant = false
-
-local isSellingAvailable = false
-
-local isKCPRequested = false
-
-local hasFirstCharacterLoginOccured = false
-
-local hasNonfirstCharacterLoginOccured = false
+local isCommandResponseAwaited, isCarjackerGameTextIntercepted, isCommandAttemptRedundant, isSellingAvailable, isKCPRequested, hasFirstCharacterLoginOccured, hasNonfirstCharacterLoginOccured, isPlayerMuted = false, false, false, false, false, false, false, false
 
 
 -----------------------------------------------------
@@ -163,6 +151,11 @@ function sampev.onServerMessage(_, msg_text)
 			isSellingAvailable = false
 			isCommandResponseAwaited = false
 			isKCPRequested = false
+		
+		-- (Player muted from spamming CMDs) "You have been muted automatically for spamming. Please ..."
+		elseif string.sub(msg_text, 1, 48) == "You have been muted automatically for spamming. " then
+			isPlayerMuted = true
+		
 		end
 	end
 end
@@ -227,6 +220,14 @@ function main()
 		end
 	end)
 	
+	-- An extra thread that initiates a 13-second spam cooldown
+	lua_thread.create(function()
+		while true do
+			wait(200)
+			if isPlayerMuted then wait(13000) isPlayerMuted = false end
+		end
+	end)
+	
 	------------------------
 	-- MAIN THREAD CONTINUED
 	------------------------
@@ -242,6 +243,7 @@ function main()
 		isCarjackerGameTextIntercepted = false
 		isCommandAttemptRedundant = false
 		
+		while isPlayerMuted do wait(0) end
 		sampSendChat("/sellcar")
 		
 		while isCommandResponseAwaited do
