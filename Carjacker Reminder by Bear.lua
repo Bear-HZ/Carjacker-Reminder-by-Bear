@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.1")
-local script_version = "1.0.1"
+script_version("1.0.2")
+local script_version = "1.0.2"
 
 
 -----------------------------------------------------
@@ -114,7 +114,7 @@ function sampev.onServerMessage(_, msg_text)
 			end
 		
 		-- (Cooldown ongoing)
-		elseif msg_text == "   You have already dropped a car, wait until your reload time is over!" then
+		elseif msg_text:sub(1, 51) == "You have already dropped off a car - you must wait " then
 			hasFirstCharacterLoginOccured = true
 			
 			if isCommandResponseAwaited then
