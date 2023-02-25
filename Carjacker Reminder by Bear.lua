@@ -194,7 +194,7 @@ function main()
 	
 	sampTextdrawDelete(517) -- Removes any existing textdraws with the same ID
 	
-	sampAddChatMessage("--- {AAAAFF}Carjacker Reminder v" .. script_version .. " {FFFFFF}by Bear | Use {AAAAFF}/cjr {FFFFFF}to Toggle Reminder", -1)
+	sampAddChatMessage("--- {AAAAFF}Carjacker Reminder v" .. script_version .. " {FFFFFF}by Bear | Use {AAAAFF}/cjr {FFFFFF}to toggle reminder", -1)
 	
 	sampRegisterChatCommand("cjr", cmd_cjr)
 	
