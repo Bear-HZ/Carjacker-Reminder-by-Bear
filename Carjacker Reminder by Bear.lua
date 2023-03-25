@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.3")
-local script_version = "1.0.3"
+script_version("1.0.4")
+local script_version = "1.0.4"
 
 
 -----------------------------------------------------
@@ -237,6 +237,8 @@ function main()
 	------------------------
 	
 	repeat wait(100) until hasFirstCharacterLoginOccured -- Detecting the first login
+	wait(100)
+	hasNonfirstCharacterLoginOccured = false
 	
 	while true do
 		isRecheckNeeded = true
@@ -248,7 +250,6 @@ function main()
 		isCommandResponseAwaited = true
 		isCarjackerGameTextIntercepted = false
 		isCommandAttemptRedundant = false
-		hasNonfirstCharacterLoginOccured = false
 		
 		while isPlayerMuted do wait(0) end
 		sampSendChat("/sellcar")
