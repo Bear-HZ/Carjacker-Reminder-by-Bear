@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.4")
-local script_version = "1.0.4"
+script_version("1.0.5")
+local script_version = "1.0.5"
 
 
 -----------------------------------------------------
@@ -159,6 +159,12 @@ function sampev.onServerMessage(_, msg_text)
 		-- (Player muted from spamming CMDs) "You have been muted automatically for spamming. Please ..."
 		elseif string.sub(msg_text, 1, 48) == "You have been muted automatically for spamming. " then
 			isPlayerMuted = true
+			hasFirstCharacterLoginOccured = true
+			
+			if isCommandResponseAwaited then
+				isCommandResponseAwaited = false
+				return false
+			end
 		
 		end
 	end
