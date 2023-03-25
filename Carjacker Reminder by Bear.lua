@@ -5,8 +5,8 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.2")
-local script_version = "1.0.2"
+script_version("1.0.3")
+local script_version = "1.0.3"
 
 
 -----------------------------------------------------
@@ -58,7 +58,10 @@ local pulseDuration = 1000 -- the time taken (in milliseconds) for the textdraw 
 
 local game_resX, game_resY
 
-local isCommandResponseAwaited, isCarjackerGameTextIntercepted, isCommandAttemptRedundant, isSellingAvailable, isKCPRequested, hasFirstCharacterLoginOccured, hasNonfirstCharacterLoginOccured, isPlayerMuted = false, false, false, false, false, false, false, false
+local isCommandResponseAwaited, isCarjackerGameTextIntercepted, isCommandAttemptRedundant = false, false, false
+local isSellingAvailable, isKCPRequested, isRecheckNeeded = false, false, true
+local hasFirstCharacterLoginOccured, hasNonfirstCharacterLoginOccured = false, false
+local isPlayerMuted = false
 
 
 -----------------------------------------------------
@@ -151,6 +154,7 @@ function sampev.onServerMessage(_, msg_text)
 			isSellingAvailable = false
 			isCommandResponseAwaited = false
 			isKCPRequested = false
+			isRecheckNeeded = true
 		
 		-- (Player muted from spamming CMDs) "You have been muted automatically for spamming. Please ..."
 		elseif string.sub(msg_text, 1, 48) == "You have been muted automatically for spamming. " then
@@ -233,15 +237,18 @@ function main()
 	------------------------
 	
 	repeat wait(100) until hasFirstCharacterLoginOccured -- Detecting the first login
-	wait(3000) -- A buffer in case the player spawns in an interior at login
 	
 	while true do
+		isRecheckNeeded = true
+		
 		::start::
+		
 		repeat wait(100) until config_table.Options.isReminderEnabled
 		
 		isCommandResponseAwaited = true
 		isCarjackerGameTextIntercepted = false
 		isCommandAttemptRedundant = false
+		hasNonfirstCharacterLoginOccured = false
 		
 		while isPlayerMuted do wait(0) end
 		sampSendChat("/sellcar")
@@ -263,6 +270,11 @@ function main()
 		end
 		
 		if isCarjackerGameTextIntercepted or isCommandAttemptRedundant then
+			if isRecheckNeeded then
+				isRecheckNeeded = false
+				goto start
+			end
+			
 			isSellingAvailable = true
 			
 			-- Loop if the reminder is disabled by the player
