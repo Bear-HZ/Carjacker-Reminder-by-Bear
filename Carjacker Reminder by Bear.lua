@@ -5,8 +5,7 @@
 
 script_name("Carjacker Reminder by Bear")
 script_author("Bear")
-script_version("1.0.5")
-local script_version = "1.0.5"
+script_version("1.0.6")
 
 
 -----------------------------------------------------
@@ -59,7 +58,7 @@ local pulseDuration = 1000 -- the time taken (in milliseconds) for the textdraw 
 local game_resX, game_resY
 
 local isCommandResponseAwaited, isCarjackerGameTextIntercepted, isCommandAttemptRedundant = false, false, false
-local isSellingAvailable, isKCPRequested, isRecheckNeeded = false, false, true
+local isSellingAvailable, isKCPRequested = false, false
 local hasFirstCharacterLoginOccured, hasNonfirstCharacterLoginOccured = false, false
 local isPlayerMuted = false
 
@@ -104,6 +103,7 @@ function sampev.onServerMessage(_, msg_text)
 		-- (Vehicle delivery done) "You sold a car for $600, your reload time is 12 minutes."
 		if msg_text:sub(1, 20) == "You sold a car for $" then
 			hasFirstCharacterLoginOccured = true
+			isCarjackerGameTextIntercepted = false
 			isSellingAvailable = false
 		
 		-- (Checkpoint already exists) "Please ensure that your current checkpoint is destroyed first (you either have material packages, or another existing checkpoint)."
@@ -154,7 +154,6 @@ function sampev.onServerMessage(_, msg_text)
 			isSellingAvailable = false
 			isCommandResponseAwaited = false
 			isKCPRequested = false
-			isRecheckNeeded = true
 		
 		-- (Player muted from spamming CMDs) "You have been muted automatically for spamming. Please ..."
 		elseif string.sub(msg_text, 1, 48) == "You have been muted automatically for spamming. " then
@@ -204,7 +203,7 @@ function main()
 	
 	sampTextdrawDelete(517) -- Removes any existing textdraws with the same ID
 	
-	sampAddChatMessage("--- {AAAAFF}Carjacker Reminder v" .. script_version .. " {FFFFFF}by Bear | Use {AAAAFF}/cjr {FFFFFF}to toggle reminder", -1)
+	sampAddChatMessage("--- {AAAAFF}Carjacker Reminder v" .. script.this.version .. " {FFFFFF}by Bear | Use {AAAAFF}/cjr {FFFFFF}to toggle reminder", -1)
 	
 	sampRegisterChatCommand("cjr", cmd_cjr)
 	
@@ -247,10 +246,7 @@ function main()
 	hasNonfirstCharacterLoginOccured = false
 	
 	while true do
-		isRecheckNeeded = true
-		
 		::start::
-		
 		repeat wait(100) until config_table.Options.isReminderEnabled
 		
 		isCommandResponseAwaited = true
@@ -262,9 +258,15 @@ function main()
 		
 		while isCommandResponseAwaited do
 			if isCarjackerGameTextIntercepted then
-				wait(100) -- a buffer to ensure that the carjacker checkpoint is intercepted by sampev.onSetCheckpoint() before closing the response window
+				wait(100)
+				
 				isCommandResponseAwaited = false
-				break
+				
+				if isCarjackerGameTextIntercepted then
+					break
+				else
+					goto start
+				end
 			end
 			
 			wait(0)
@@ -277,11 +279,6 @@ function main()
 		end
 		
 		if isCarjackerGameTextIntercepted or isCommandAttemptRedundant then
-			if isRecheckNeeded then
-				isRecheckNeeded = false
-				goto start
-			end
-			
 			isSellingAvailable = true
 			
 			-- Loop if the reminder is disabled by the player
