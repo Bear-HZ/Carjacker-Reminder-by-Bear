@@ -258,7 +258,7 @@ function main()
 		
 		while isCommandResponseAwaited do
 			if isCarjackerGameTextIntercepted then
-				wait(100)
+				wait(500)
 				
 				isCommandResponseAwaited = false
 				
